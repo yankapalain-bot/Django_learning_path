@@ -1,0 +1,88 @@
+{% extends "poi/base.html" %}
+{% block title %}JOIN Query Explorer{% endblock %}
+{% block content %}
+
+<h2 class="mb-1">🔗 SQL JOIN Query Explorer</h2>
+<p class="text-muted mb-4">
+  Select a query type and optional filters. The results table and the SQL equivalent
+  are shown below — demonstrating how Django ORM translates to SQL JOINs.
+</p>
+
+{# ── FILTER FORM ─────────────────────────────────── #}
+<div class="card shadow-sm mb-4">
+  <div class="card-header fw-bold">Query Controls</div>
+  <div class="card-body">
+    <form method="get" class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label fw-semibold">JOIN Query Type</label>
+        {{ form.query_type }}
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">City Filter</label>
+        {{ form.filter_city }}
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Neighbourhood Filter</label>
+        {{ form.filter_neighbourhood }}
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Cuisine Filter</label>
+        {{ form.filter_cuisine }}
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Museum Theme Filter</label>
+        {{ form.filter_theme }}
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Government Level</label>
+        {{ form.filter_govt_level }}
+      </div>
+      <div class="col-md-3 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">▶ Run Query</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{# ── SQL EXPLANATION ──────────────────────────────── #}
+{% if sql_explanation %}
+<div class="card shadow-sm mb-4">
+  <div class="card-header fw-bold">📖 Equivalent SQL</div>
+  <div class="card-body">
+    <pre class="sql-box mb-0">{{ sql_explanation }}</pre>
+    <div class="mt-2 small text-muted">
+      <span class="badge badge-pk text-white me-1">PK</span> Primary Key &nbsp;
+      <span class="badge badge-fk text-white me-1">FK</span> Foreign Key &nbsp;
+      <span class="badge badge-o2o text-white">1:1</span> OneToOne
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{# ── RESULTS TABLE ────────────────────────────────── #}
+{% if results %}
+<div class="card shadow-sm">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <span class="fw-bold">Results</span>
+    <span class="badge bg-secondary">{{ result_count }} row{{ result_count|pluralize }}</span>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-striped table-hover mb-0">
+        <thead class="table-dark">
+          <tr>{% for col in columns %}<th>{{ col }}</th>{% endfor %}</tr>
+        </thead>
+        <tbody>
+          {% for row in results %}
+          <tr>{% for cell in row %}<td>{{ cell }}</td>{% endfor %}</tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% elif form.is_bound %}
+<div class="alert alert-info">No results found for that combination.</div>
+{% endif %}
+
+{% endblock %}
