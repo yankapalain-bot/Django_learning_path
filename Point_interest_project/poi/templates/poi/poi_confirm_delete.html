@@ -1,0 +1,15 @@
+{% extends "poi/base.html" %}
+{% block content %}
+<div class="card shadow-sm" style="max-width:500px;margin:auto">
+  <div class="card-header bg-danger text-white fw-bold">Confirm Delete</div>
+  <div class="card-body">
+    <p>Are you sure you want to delete <strong>{{ object }}</strong>?</p>
+    <p class="text-muted small">This will also delete all related subtype records (cascade).</p>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger me-2">Yes, Delete</button>
+      <a href="javascript:history.back()" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

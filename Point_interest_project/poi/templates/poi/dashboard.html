@@ -1,0 +1,135 @@
+{% extends "poi/base.html" %}
+{% block title %}Dashboard — POI Explorer{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="mb-0">📍 Points of Interest Explorer</h2>
+    <p class="text-muted mb-0">A Django demo of Primary Keys, Foreign Keys &amp; SQL JOINs</p>
+  </div>
+  <a href="{% url 'poi:join_query' %}" class="btn btn-primary btn-lg">🔗 Open JOIN Explorer</a>
+</div>
+
+{# ── STAT CARDS ── #}
+<div class="row g-3 mb-4">
+  <div class="col-sm-6 col-md-3">
+    <div class="card shadow-sm text-center h-100">
+      <div class="card-body">
+        <div class="display-5 fw-bold text-primary">{{ total_poi }}</div>
+        <div class="text-muted small mt-1">Total POIs</div>
+        <a href="{% url 'poi:poi_list' %}" class="btn btn-sm btn-outline-primary mt-2">View All</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-3">
+    <div class="card shadow-sm text-center h-100">
+      <div class="card-body">
+        <div class="display-5 fw-bold text-warning">{{ total_restaurants }}</div>
+        <div class="text-muted small mt-1">Restaurants</div>
+        <a href="{% url 'poi:restaurant_list' %}" class="btn btn-sm btn-outline-warning mt-2">View</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-3">
+    <div class="card shadow-sm text-center h-100">
+      <div class="card-body">
+        <div class="display-5 fw-bold text-info">{{ total_museums }}</div>
+        <div class="text-muted small mt-1">Museums</div>
+        <a href="{% url 'poi:museum_list' %}" class="btn btn-sm btn-outline-info mt-2">View</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-3">
+    <div class="card shadow-sm text-center h-100">
+      <div class="card-body">
+        <div class="display-5 fw-bold text-success">{{ total_banks }}</div>
+        <div class="text-muted small mt-1">Banks</div>
+        <a href="{% url 'poi:bank_list' %}" class="btn btn-sm btn-outline-success mt-2">View</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{# ── QUICK-ADD BUTTONS ── #}
+<div class="card shadow-sm mb-4">
+  <div class="card-header fw-bold">➕ Add New Point of Interest</div>
+  <div class="card-body d-flex flex-wrap gap-2">
+    <a href="{% url 'poi:restaurant_create' %}" class="btn btn-outline-warning">🍴 Restaurant</a>
+    <a href="{% url 'poi:museum_create' %}"     class="btn btn-outline-info">🏛 Museum</a>
+    <a href="{% url 'poi:government_create' %}" class="btn btn-outline-secondary">🏢 Government Office</a>
+    <a href="{% url 'poi:bank_create' %}"       class="btn btn-outline-success">🏦 Bank</a>
+  </div>
+</div>
+
+{# ── KEY CONCEPTS ── #}
+<div class="card shadow-sm mb-4">
+  <div class="card-header fw-bold">📚 Key Database Concepts in This App</div>
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="border rounded p-3 h-100">
+          <h6 class="fw-bold"><span class="badge bg-success me-1">PK</span> Primary Key</h6>
+          <p class="small text-muted mb-0">
+            Every model has an auto-generated <code>id</code> field — the unique identifier
+            for each row. Django sets this automatically.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="border rounded p-3 h-100">
+          <h6 class="fw-bold"><span class="badge bg-primary me-1">FK</span> Foreign Key</h6>
+          <p class="small text-muted mb-0">
+            <code>ForeignKey(Model)</code> stores the PK of another table's row.
+            Example: <code>Neighbourhood.city_id</code> stores a City's PK.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="border rounded p-3 h-100">
+          <h6 class="fw-bold"><span class="badge bg-purple me-1" style="background:#6f42c1">1:1</span> OneToOne</h6>
+          <p class="small text-muted mb-0">
+            <code>OneToOneField</code> is a FK + UNIQUE constraint. Each Restaurant
+            links to exactly one PointOfInterest and vice-versa.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{# ── CITIES / NEIGHBOURHOODS ── #}
+<div class="card shadow-sm">
+  <div class="card-header fw-bold">🗺 Cities &amp; Neighbourhoods</div>
+  <div class="card-body p-0">
+    <table class="table table-hover mb-0">
+      <thead class="table-dark">
+        <tr>
+          <th>City <span class="badge bg-success ms-1">PK</span></th>
+          <th>Country</th>
+          <th>Neighbourhoods</th>
+          <th>POIs</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for city in cities %}
+        <tr>
+          <td><strong>{{ city.name }}</strong> <span class="text-muted small">#{{ city.pk }}</span></td>
+          <td>{{ city.country }}</td>
+          <td>
+            {% for n in city.neighbourhoods.all %}
+              <span class="badge bg-light text-dark border me-1">{{ n.name }}</span>
+            {% empty %}
+              <span class="text-muted small">—</span>
+            {% endfor %}
+          </td>
+          <td>{{ city.neighbourhoods.all|length }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="text-center text-muted">No cities yet. Run <code>python manage.py seed_data</code></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
