@@ -169,7 +169,7 @@ class PatientListView(LoginRequiredMixin, ListView):
     context_object_name = 'patients'
 
     queryset = Patient.objects.select_related('hospital', 'doctor').order_by('last_name', 'first_name')
-    paginate_by = None  # set to 10 later as an extension
+    paginate_by = 10  # set to 10 later as an extension
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
