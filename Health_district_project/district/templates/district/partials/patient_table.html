@@ -1,0 +1,39 @@
+<table border="1" cellpadding="6">
+    <thead>
+        <tr>
+            <th>Patient</th>
+            <th>Hospital</th>
+            <th>Doctor</th>
+            <th>Admitted</th>
+            <th>Discharged</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for patient in patients %}
+            <tr id="patient-{{ patient.pk }}">
+                <td><a href="{% url 'patient-detail' patient.pk %}">{{ patient }}</a></td>
+                <td>{{ patient.hospital.name }}</td>
+                <td>{{ patient.doctor }}</td>
+                <td>{{ patient.admitted_on }}</td>
+                <td>{% if patient.is_discharged %}Yes{% else %}No{% endif %}</td>
+                <td>
+                    <a href="{% url 'patient-update' patient.pk %}">Edit</a> |
+                    <a href="{% url 'patient-delete' patient.pk %}">Delete</a>
+                    <form
+                        hx-delete="{% url 'patient-inline-delete' patient.pk %}"
+                        hx-target="#patient-{{ patient.pk }}"
+                        hx-swap="outerHTML"
+                        hx-confirm="Delete this patient?"
+                    >
+                        <button type="submit">Inline Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="6">No patients found.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

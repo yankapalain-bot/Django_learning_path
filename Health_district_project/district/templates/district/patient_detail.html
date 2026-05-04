@@ -1,0 +1,36 @@
+{% extends 'district/base.html' %}
+
+{% block title %}{{ patient }}{% endblock %}
+
+{% block content %}
+<h1>{{ patient }}</h1>
+
+<p><strong>Hospital:</strong> <a href="{% url 'hospital-detail' patient.hospital.pk %}">{{ patient.hospital.name }}</a></p>
+<p><strong>Doctor:</strong> {{ patient.doctor }}</p>
+<p><strong>Date of Birth:</strong> {{ patient.date_of_birth }}</p>
+<p><strong>Gender:</strong> {{ patient.get_gender_display }}</p>
+<p><strong>Phone:</strong> {{ patient.phone }}</p>
+<p><strong>Admitted On:</strong> {{ patient.admitted_on }}</p>
+<p><strong>Diagnosis:</strong> {{ patient.diagnosis }}</p>
+<p><strong>Discharged:</strong> {% if patient.is_discharged %}Yes{% else %}No{% endif %}</p>
+
+<p>
+    <a href="{% url 'patient-update' patient.pk %}">Edit Patient</a> |
+    <a href="{% url 'patient-delete' patient.pk %}">Delete Patient</a>
+</p>
+
+<hr>
+
+<h2>Other Patients of This Doctor</h2>
+
+<ul>
+    {% for other_patient in doctor_other_patients %}
+        <li>
+            <a href="{% url 'patient-detail' other_patient.pk %}">{{ other_patient }}</a>
+            — {{ other_patient.hospital.name }}
+        </li>
+    {% empty %}
+        <li>No other patients for this doctor.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

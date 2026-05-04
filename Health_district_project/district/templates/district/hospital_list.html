@@ -1,0 +1,39 @@
+{% extends 'district/base.html' %}
+
+{% block title %}Hospitals{% endblock %}
+
+{% block content %}
+<h1>Our 4 Hospitals</h1>
+
+<p><a href="{% url 'hospital-create' %}">+ Add Hospital</a></p>
+
+<table border="1" cellpadding="6">
+    <thead>
+        <tr>
+            <th>Hospital</th>
+            <th>City</th>
+            <th>Patients</th>
+            <th>Doctors</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for hospital in hospitals %}
+            <tr>
+                <td><a href="{% url 'hospital-detail' hospital.pk %}">{{ hospital.name }}</a></td>
+                <td>{{ hospital.city }}</td>
+                <td>{{ hospital.patient_count }}</td>
+                <td>{{ hospital.doctor_count }}</td>
+                <td>
+                    <a href="{% url 'hospital-update' hospital.pk %}">Edit</a> |
+                    <a href="{% url 'hospital-delete' hospital.pk %}">Delete</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="5">No hospitals found.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

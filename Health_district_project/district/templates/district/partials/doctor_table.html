@@ -1,0 +1,37 @@
+<table border="1" cellpadding="6">
+    <thead>
+        <tr>
+            <th>Doctor</th>
+            <th>Specialty</th>
+            <th>Hospitals</th>
+            <th>Patients</th>
+            <th>Active</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for doctor in doctors %}
+            <tr>
+                <td><a href="{% url 'doctor-detail' doctor.pk %}">{{ doctor }}</a></td>
+                <td>{{ doctor.specialty }}</td>
+                <td>
+                    {% for hospital in doctor.hospitals.all %}
+                        {{ hospital.name }}{% if not forloop.last %}, {% endif %}
+                    {% empty %}
+                        No hospitals
+                    {% endfor %}
+                </td>
+                <td>{{ doctor.patient_count }}</td>
+                <td>{% if doctor.is_active %}Yes{% else %}No{% endif %}</td>
+                <td>
+                    <a href="{% url 'doctor-update' doctor.pk %}">Edit</a> |
+                    <a href="{% url 'doctor-delete' doctor.pk %}">Delete</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="6">No doctors found.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

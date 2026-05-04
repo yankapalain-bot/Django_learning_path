@@ -1,0 +1,15 @@
+{% extends 'district/base.html' %}
+
+{% block title %}{% if object %}Edit Patient{% else %}Add Patient{% endif %}{% endblock %}
+
+{% block content %}
+<h1>{% if object %}Edit {{ object }}{% else %}Add a Patient{% endif %}</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+</form>
+
+<p><a href="{% url 'patient-list' %}">Cancel</a></p>
+{% endblock %}

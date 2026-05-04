@@ -1,0 +1,41 @@
+{% extends 'district/base.html' %}
+
+{% block title %}{{ doctor }}{% endblock %}
+
+{% block content %}
+<h1>{{ doctor }}</h1>
+
+<p><strong>Specialty:</strong> {{ doctor.specialty }}</p>
+<p><strong>Phone:</strong> {{ doctor.phone }}</p>
+<p><strong>Active:</strong> {% if doctor.is_active %}Yes{% else %}No{% endif %}</p>
+
+<p>
+    <a href="{% url 'doctor-update' doctor.pk %}">Edit Doctor</a> |
+    <a href="{% url 'doctor-delete' doctor.pk %}">Delete Doctor</a>
+</p>
+
+<hr>
+
+<h2>Hospitals Where This Doctor Works</h2>
+
+<ul>
+    {% for hospital in hospitals %}
+        <li><a href="{% url 'hospital-detail' hospital.pk %}">{{ hospital.name }}</a></li>
+    {% empty %}
+        <li>No hospitals assigned.</li>
+    {% endfor %}
+</ul>
+
+<h2>Patients Handled by This Doctor</h2>
+
+<ul>
+    {% for patient in patients %}
+        <li>
+            <a href="{% url 'patient-detail' patient.pk %}">{{ patient }}</a>
+            — {{ patient.hospital.name }}
+        </li>
+    {% empty %}
+        <li>No patients assigned to this doctor.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'district/base.html' %}
+
+{% block title %}Doctors{% endblock %}
+
+{% block content %}
+<h1>Doctors</h1>
+
+<p>
+    <a href="{% url 'doctor-create' %}">+ Add Doctor</a>
+</p>
+
+<p>
+    <input
+        type="search"
+        name="q"
+        placeholder="Search doctors..."
+        hx-get="{% url 'doctor-search' %}"
+        hx-trigger="keyup changed delay:300ms"
+        hx-target="#doctor-results"
+        hx-swap="innerHTML"
+    >
+</p>
+
+<div id="doctor-results">
+    {% include 'district/partials/doctor_table.html' %}
+</div>
+{% endblock %}

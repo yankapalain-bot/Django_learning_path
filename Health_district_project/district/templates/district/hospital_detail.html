@@ -1,0 +1,65 @@
+{% extends 'district/base.html' %}
+
+{% block title %}{{ hospital.name }}{% endblock %}
+
+{% block content %}
+<h1>{{ hospital.name }}</h1>
+
+<p><strong>City:</strong> {{ hospital.city }}</p>
+<p><strong>Address:</strong> {{ hospital.address }}</p>
+<p><strong>Opened:</strong> {{ hospital.opened_date }}</p>
+<p><strong>Notes:</strong> {{ hospital.notes }}</p>
+
+<p>
+    <a href="{% url 'hospital-update' hospital.pk %}">Edit Hospital</a> |
+    <a href="{% url 'hospital-delete' hospital.pk %}">Delete Hospital</a>
+</p>
+
+<hr>
+
+<h2>Doctors Working Here</h2>
+
+<ul>
+    {% for doctor in doctors %}
+        <li>
+            <a href="{% url 'doctor-detail' doctor.pk %}">{{ doctor }}</a>
+        </li>
+    {% empty %}
+        <li>No doctors assigned to this hospital.</li>
+    {% endfor %}
+</ul>
+
+<h2>Patients in This Hospital</h2>
+
+<p><a href="{% url 'patient-create' %}">+ Add Patient</a></p>
+
+<table border="1" cellpadding="6">
+    <thead>
+        <tr>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Admitted</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for patient in patients %}
+            <tr>
+                <td><a href="{% url 'patient-detail' patient.pk %}">{{ patient }}</a></td>
+                <td>{{ patient.doctor }}</td>
+                <td>{{ patient.admitted_on }}</td>
+                <td>{% if patient.is_discharged %}Discharged{% else %}In care{% endif %}</td>
+                <td>
+                    <a href="{% url 'patient-update' patient.pk %}">Edit</a> |
+                    <a href="{% url 'patient-delete' patient.pk %}">Delete</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="5">No patients in this hospital.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

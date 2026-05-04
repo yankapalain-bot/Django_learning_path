@@ -1,0 +1,46 @@
+{% extends 'district/base.html' %}
+
+{% block title %}Patients{% endblock %}
+
+{% block content %}
+<h1>Patients</h1>
+
+<p>
+    <a href="{% url 'patient-create' %}">+ Add Patient</a>
+</p>
+
+<p>
+    <input
+        id="patient-search-input"
+        type="search"
+        name="q"
+        placeholder="Search patients..."
+        hx-get="{% url 'patient-search' %}"
+        hx-trigger="keyup changed delay:300ms"
+        hx-target="#patient-results"
+        hx-swap="innerHTML"
+        hx-include="#hospital-filter"
+    >
+</p>
+
+<p>
+    <select
+        id="hospital-filter"
+        name="hospital"
+        hx-get="{% url 'patient-filter' %}"
+        hx-trigger="change"
+        hx-target="#patient-results"
+        hx-swap="innerHTML"
+        hx-include="#patient-search-input"
+    >
+        <option value="">All hospitals</option>
+        {% for hospital in hospitals %}
+            <option value="{{ hospital.pk }}">{{ hospital.name }}</option>
+        {% endfor %}
+    </select>
+</p>
+
+<div id="patient-results">
+    {% include 'district/partials/patient_table.html' %}
+</div>
+{% endblock %}
