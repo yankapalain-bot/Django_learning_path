@@ -1,0 +1,68 @@
+{% extends "poi/base.html" %}
+{% block title %}Restaurants{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="mb-0">🍴 Restaurants</h2>
+  <a href="{% url 'poi:restaurant_create' %}" class="btn btn-success">➕ Add Restaurant</a>
+</div>
+
+<div class="card shadow-sm mb-3">
+  <div class="card-body py-2 px-3 small text-muted">
+    <strong>Tables involved:</strong>
+    <code>poi_restaurant</code>
+    <span class="badge bg-purple text-white mx-1" style="background:#6f42c1!important">OneToOne</span>→
+    <code>poi_pointofinterest</code>
+    <span class="badge bg-primary mx-1">FK</span>→
+    <code>poi_cuisine</code> &amp;
+    <code>poi_neighbourhood</code>
+    <span class="badge bg-primary mx-1">FK</span>→
+    <code>poi_city</code>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-striped table-hover mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th>ID <span class="badge bg-success ms-1">PK</span></th>
+            <th>Name</th>
+            <th>Cuisine <span class="badge bg-primary ms-1">FK</span></th>
+            <th>Price</th>
+            <th>Michelin ★</th>
+            <th>Delivery</th>
+            <th>Takeout</th>
+            <th>Neighbourhood</th>
+            <th>City</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in restaurants %}
+          <tr>
+            <td><code>{{ r.pk }}</code></td>
+            <td><a href="{% url 'poi:poi_detail' r.poi.pk %}">{{ r.poi.name }}</a></td>
+            <td>{{ r.cuisine }}</td>
+            <td>{{ r.price_range }}</td>
+            <td>{% if r.michelin_stars %}{{ r.michelin_stars }}★{% else %}—{% endif %}</td>
+            <td>{% if r.has_delivery %}✓{% else %}✗{% endif %}</td>
+            <td>{% if r.has_takeout %}✓{% else %}✗{% endif %}</td>
+            <td>{{ r.poi.neighbourhood.name|default:"—" }}</td>
+            <td>{{ r.poi.neighbourhood.city.name|default:"—" }}</td>
+            <td>
+              <a href="{% url 'poi:restaurant_edit' r.pk %}" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+              <a href="{% url 'poi:restaurant_delete' r.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="10" class="text-center text-muted py-4">No restaurants yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
