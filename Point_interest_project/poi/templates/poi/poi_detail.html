@@ -1,0 +1,138 @@
+{% extends "poi/base.html" %}
+{% block title %}{{ poi.name }}{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-start mb-4">
+  <div>
+    <h2 class="mb-0">{{ poi.name }}</h2>
+    <span class="text-muted small">Primary Key (id): <code>{{ poi.pk }}</code></span>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{% url 'poi:poi_edit' poi.pk %}" class="btn btn-outline-primary">✏️ Edit</a>
+    <a href="{% url 'poi:poi_delete' poi.pk %}" class="btn btn-outline-danger">🗑 Delete</a>
+    <a href="{% url 'poi:poi_list' %}" class="btn btn-outline-secondary">← Back</a>
+  </div>
+</div>
+
+<div class="row g-3">
+  {# ── Base POI Info ── #}
+  <div class="col-md-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header fw-bold">
+        📍 Base POI Data
+        <span class="badge bg-success ms-2">PK: {{ poi.pk }}</span>
+      </div>
+      <div class="card-body">
+        <table class="table table-sm mb-0">
+          <tr><th>Name</th><td>{{ poi.name }}</td></tr>
+          <tr><th>Type</th><td>{{ poi.get_poi_type_display }}</td></tr>
+          <tr><th>Latitude</th><td><code>{{ poi.latitude }}</code></td></tr>
+          <tr><th>Longitude</th><td><code>{{ poi.longitude }}</code></td></tr>
+          <tr><th>Address</th><td>{{ poi.address|default:"—" }}</td></tr>
+          <tr><th>Phone</th><td>{{ poi.phone|default:"—" }}</td></tr>
+          <tr><th>Website</th><td>
+            {% if poi.website %}<a href="{{ poi.website }}" target="_blank">{{ poi.website }}</a>
+            {% else %}—{% endif %}
+          </td></tr>
+          <tr>
+            <th>Neighbourhood <span class="badge bg-primary" style="font-size:.65rem">FK</span></th>
+            <td>
+              {% if poi.neighbourhood %}
+                {{ poi.neighbourhood.name }}
+                <span class="text-muted small">(neighbourhood.id = {{ poi.neighbourhood.pk }})</span>
+              {% else %}—{% endif %}
+            </td>
+          </tr>
+          <tr>
+            <th>City <span class="badge bg-primary" style="font-size:.65rem">FK via neighbourhood</span></th>
+            <td>{{ poi.neighbourhood.city.name|default:"—" }}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  {# ── Subtype Details ── #}
+  <div class="col-md-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header fw-bold">
+        🔗 Subtype Details
+        <span class="badge bg-purple text-white ms-2" style="background:#6f42c1!important">OneToOne → POI #{{ poi.pk }}</span>
+      </div>
+      <div class="card-body">
+        {% if poi.poi_type == 'restaurant' and poi.restaurant %}
+          {% with r=poi.restaurant %}
+          <table class="table table-sm mb-0">
+            <tr><th>Cuisine <span class="badge bg-primary" style="font-size:.65rem">FK</span></th>
+                <td>{{ r.cuisine }} <span class="text-muted small">(cuisine.id={{ r.cuisine.pk }})</span></td></tr>
+            <tr><th>Price Range</th><td>{{ r.price_range }}</td></tr>
+            <tr><th>Seating</th><td>{{ r.seating_capacity }}</td></tr>
+            <tr><th>Michelin ★</th><td>{% if r.michelin_stars %}{{ r.michelin_stars }}{% else %}—{% endif %}</td></tr>
+            <tr><th>Delivery</th><td>{% if r.has_delivery %}✓{% else %}✗{% endif %}</td></tr>
+            <tr><th>Takeout</th><td>{% if r.has_takeout %}✓{% else %}✗{% endif %}</td></tr>
+            <tr><th>Hours</th><td>{{ r.opening_hours|default:"—" }}</td></tr>
+          </table>
+          {% endwith %}
+        {% elif poi.poi_type == 'museum' and poi.museum %}
+          {% with m=poi.museum %}
+          <table class="table table-sm mb-0">
+            <tr><th>Theme <span class="badge bg-primary" style="font-size:.65rem">FK</span></th>
+                <td>{{ m.theme }} <span class="text-muted small">(theme.id={{ m.theme.pk }})</span></td></tr>
+            <tr><th>Exhibition</th><td>{{ m.current_exhibition|default:"—" }}</td></tr>
+            <tr><th>Admission</th><td>{% if m.is_free %}Free{% else %}${{ m.admission_fee }}{% endif %}</td></tr>
+            <tr><th>Founded</th><td>{{ m.founding_year|default:"—" }}</td></tr>
+            <tr><th>Floors</th><td>{{ m.num_floors }}</td></tr>
+          </table>
+          {% endwith %}
+        {% elif poi.poi_type == 'government' and poi.government %}
+          {% with g=poi.government %}
+          <table class="table table-sm mb-0">
+            <tr><th>Department</th><td>{{ g.department }}</td></tr>
+            <tr><th>Level</th><td>{{ g.get_level_display }}</td></tr>
+            <tr><th>Official Name</th><td>{{ g.official_name|default:"—" }}</td></tr>
+            <tr><th>Services</th><td>{{ g.services_offered|default:"—" }}</td></tr>
+            <tr><th>Appointment</th><td>{% if g.appointment_required %}Required{% else %}Walk-in OK{% endif %}</td></tr>
+            <tr><th>Public Access</th><td>{% if g.public_access %}✓ Yes{% else %}✗ No{% endif %}</td></tr>
+          </table>
+          {% endwith %}
+        {% elif poi.poi_type == 'bank' and poi.bank %}
+          {% with b=poi.bank %}
+          <table class="table table-sm mb-0">
+            <tr><th>Bank Name</th><td>{{ b.bank_name }}</td></tr>
+            <tr><th>Type</th><td>{{ b.get_bank_type_display }}</td></tr>
+            <tr><th>SWIFT</th><td>{{ b.swift_code|default:"—" }}</td></tr>
+            <tr><th>ATM</th><td>{% if b.has_atm %}✓ Yes ({{ b.num_atms }}){% else %}✗ No{% endif %}</td></tr>
+            <tr><th>Drive-Through</th><td>{% if b.drive_through %}✓{% else %}✗{% endif %}</td></tr>
+            <tr><th>Foreign Currency</th><td>{% if b.accepts_foreign_currency %}✓{% else %}✗{% endif %}</td></tr>
+          </table>
+          {% endwith %}
+        {% else %}
+          <p class="text-muted">No subtype details recorded yet.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{# ── Nearby POIs ── #}
+{% if poi.nearby_from.exists %}
+<div class="card shadow-sm mt-3">
+  <div class="card-header fw-bold">🗺 Nearby POIs <span class="badge bg-secondary ms-1">Many-to-Many via NearbyPOI junction table</span></div>
+  <div class="card-body p-0">
+    <table class="table table-sm mb-0">
+      <thead class="table-light"><tr><th>Nearby POI</th><th>Type</th><th>Walk (min)</th></tr></thead>
+      <tbody>
+        {% for link in poi.nearby_from.select_related %}
+        <tr>
+          <td><a href="{% url 'poi:poi_detail' link.to_poi.pk %}">{{ link.to_poi.name }}</a></td>
+          <td>{{ link.to_poi.get_poi_type_display }}</td>
+          <td>{{ link.walk_minutes }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

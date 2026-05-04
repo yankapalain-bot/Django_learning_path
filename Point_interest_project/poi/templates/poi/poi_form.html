@@ -1,0 +1,40 @@
+{% extends "poi/base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2>{{ title }}</h2>
+  <a href="{% url 'poi:poi_list' %}" class="btn btn-outline-secondary">← Back to List</a>
+</div>
+
+<div class="card shadow-sm" style="max-width:700px">
+  <div class="card-header fw-bold">
+    📍 Point of Interest
+    <span class="badge bg-success ms-2">PK: auto-assigned on save</span>
+  </div>
+  <div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+      <div class="row g-3">
+        {% for field in form %}
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+            <div class="text-danger small mt-1">{{ field.errors }}</div>
+          {% endif %}
+          {% if field.help_text %}
+            <div class="text-muted small">{{ field.help_text }}</div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      <div class="d-flex gap-2 mt-4">
+        <button type="submit" class="btn btn-success">💾 Save</button>
+        <a href="{% url 'poi:poi_list' %}" class="btn btn-outline-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
