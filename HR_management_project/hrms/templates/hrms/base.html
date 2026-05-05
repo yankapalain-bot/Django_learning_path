@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}HR Dashboard{% endblock %}</title>
+  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+</head>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+
+<nav>
+  <a href="{% url 'hrms:dashboard' %}">Dashboard</a> |
+  <a href="{% url 'hrms:employee_list' %}">Employees</a> |
+  <a href="{% url 'hrms:department_list' %}">Departments</a> |
+  <a href="{% url 'hrms:project_list' %}">Projects</a>
+</nav>
+
+<hr>
+
+<div id="main-content">
+  {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

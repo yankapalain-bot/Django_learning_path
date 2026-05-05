@@ -1,0 +1,35 @@
+{% extends "hrms/base.html" %}
+{% block title %}Departments{% endblock %}
+{% block content %}
+<h1>Departments</h1>
+
+<a href="{% url 'hrms:department_create' %}">+ New Department</a>
+
+<form>
+  <input
+    type="text"
+    name="q"
+    value="{{ q }}"
+    placeholder="Search departments…"
+    hx-get="{% url 'hrms:department_list' %}"
+    hx-trigger="keyup changed delay:300ms"
+    hx-target="#dept-rows"
+    hx-swap="innerHTML"
+  >
+</form>
+
+<table border="1">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Parent</th>
+      <th>Sub-departments</th>
+      <th>Employees</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="dept-rows">
+    {% include "hrms/departments/_table_rows.html" %}
+  </tbody>
+</table>
+{% endblock %}

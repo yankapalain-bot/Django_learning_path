@@ -1,0 +1,18 @@
+{% extends "hrms/base.html" %}
+{% block title %}{{ action }} Department{% endblock %}
+{% block content %}
+<h1>{{ action }} Department</h1>
+
+<div id="form-result"></div>
+
+<form
+  hx-post="{% if object %}{% url 'hrms:department_update' object.pk %}{% else %}{% url 'hrms:department_create' %}{% endif %}"
+  hx-target="#form-result"
+  hx-swap="innerHTML"
+>
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">{{ action }}</button>
+  <a href="{% url 'hrms:department_list' %}">Cancel</a>
+</form>
+{% endblock %}

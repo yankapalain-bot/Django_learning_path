@@ -1,0 +1,15 @@
+{% extends "hrms/base.html" %}
+{% block title %}Delete Department{% endblock %}
+{% block content %}
+<h1>Delete Department: {{ object }}</h1>
+<p>Are you sure? Sub-departments will be unlinked and employees will lose their department reference.</p>
+
+<div id="delete-result"></div>
+
+<button
+  hx-post="{% url 'hrms:department_delete' object.pk %}"
+  hx-target="#delete-result"
+  hx-swap="innerHTML"
+>Yes, Delete</button>
+<a href="{% url 'hrms:department_list' %}">Cancel</a>
+{% endblock %}

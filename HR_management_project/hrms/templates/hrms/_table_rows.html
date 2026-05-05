@@ -1,0 +1,23 @@
+{% for dept in departments %}
+<tr>
+  <td><a href="{% url 'hrms:department_detail' dept.pk %}">{{ dept.name }}</a></td>
+  <td>
+    {% if dept.parent %}
+      <a href="{% url 'hrms:department_detail' dept.parent.pk %}">{{ dept.parent.name }}</a>
+    {% else %}—{% endif %}
+  </td>
+  <td>{{ dept.sub_departments.count }}</td>
+  <td>{{ dept.employees.count }}</td>
+  <td>
+    <a href="{% url 'hrms:department_update' dept.pk %}">Edit</a> |
+    <button
+      hx-delete="{% url 'hrms:department_delete' dept.pk %}"
+      hx-target="closest tr"
+      hx-swap="outerHTML"
+      hx-confirm="Delete department {{ dept.name }}?"
+    >Delete</button>
+  </td>
+</tr>
+{% empty %}
+<tr><td colspan="5">No departments found.</td></tr>
+{% endfor %}
