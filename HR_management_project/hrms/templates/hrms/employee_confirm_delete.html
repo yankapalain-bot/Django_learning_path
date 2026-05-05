@@ -1,0 +1,15 @@
+{% extends "hrms/base.html" %}
+{% block title %}Delete Employee{% endblock %}
+{% block content %}
+<h1>Delete Employee: {{ object }}</h1>
+<p>Are you sure? This action cannot be undone.</p>
+
+<div id="delete-result"></div>
+
+<button
+  hx-post="{% url 'hrms:employee_delete' object.pk %}"
+  hx-target="#delete-result"
+  hx-swap="innerHTML"
+>Yes, Delete</button>
+<a href="{% url 'hrms:employee_list' %}">Cancel</a>
+{% endblock %}

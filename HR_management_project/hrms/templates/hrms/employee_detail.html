@@ -1,0 +1,60 @@
+{% extends "hrms/base.html" %}
+{% block title %}{{ emp.full_name }}{% endblock %}
+{% block content %}
+<h1>{{ emp.full_name }}</h1>
+
+<p>Title: {{ emp.title }}</p>
+<p>Level: {{ emp.get_level_display }}</p>
+<p>Type: {{ emp.get_employee_type_display }}</p>
+<p>Department:
+  {% if emp.department %}
+    <a href="{% url 'hrms:department_detail' emp.department.pk %}">{{ emp.department }}</a>
+  {% else %}—{% endif %}
+</p>
+<p>Manager:
+  {% if emp.manager %}
+    <a href="{% url 'hrms:employee_detail' emp.manager.pk %}">{{ emp.manager.full_name }}</a>
+  {% else %}(none — top of hierarchy){% endif %}
+</p>
+<p>Hire Date: {{ emp.hire_date }}</p>
+<p>Active: {{ emp.is_active|yesno:"Yes,No" }}</p>
+<p>Bio: {{ emp.bio }}</p>
+
+<p>
+  <a href="{% url 'hrms:employee_update' emp.pk %}">Edit</a> |
+  <button
+    hx-delete="{% url 'hrms:employee_delete' emp.pk %}"
+    hx-target="#delete-result"
+    hx-swap="innerHTML"
+    hx-confirm="Permanently delete {{ emp.full_name }}?"
+  >Delete</button>
+</p>
+<div id="delete-result"></div>
+
+<h2>Direct Reports ({{ direct_reports.count }})</h2>
+<ul>
+  {% for dr in direct_reports %}
+    <li><a href="{% url 'hrms:employee_detail' dr.pk %}">{{ dr.full_name }}</a> — {{ dr.title }}</li>
+  {% empty %}
+    <li>None</li>
+  {% endfor %}
+</ul>
+
+<h2>Projects (member)</h2>
+<ul>
+  {% for proj in projects %}
+    <li><a href="{% url 'hrms:project_detail' proj.pk %}">{{ proj.name }}</a></li>
+  {% empty %}
+    <li>None</li>
+  {% endfor %}
+</ul>
+
+<h2>Led Projects</h2>
+<ul>
+  {% for proj in led_projects %}
+    <li><a href="{% url 'hrms:project_detail' proj.pk %}">{{ proj.name }}</a></li>
+  {% empty %}
+    <li>None</li>
+  {% endfor %}
+</ul>
+{% endblock %}
