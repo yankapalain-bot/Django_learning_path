@@ -1,0 +1,29 @@
+{% extends "hrms/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>HR Dashboard</h1>
+
+<p>Active Employees: {{ employee_count }}</p>
+<p>Departments: {{ department_count }}</p>
+<p>Projects: {{ project_count }}</p>
+
+<h2>Recently Added Employees</h2>
+<ul>
+  {% for emp in recent_employees %}
+    <li>
+      <a href="{% url 'hrms:employee_detail' emp.pk %}">{{ emp.full_name }}</a>
+      — {{ emp.title }}
+    </li>
+  {% endfor %}
+</ul>
+
+<h2>Active Projects</h2>
+<ul>
+  {% for proj in active_projects %}
+    <li>
+      <a href="{% url 'hrms:project_detail' proj.pk %}">{{ proj.name }}</a>
+      ({{ proj.department }})
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}

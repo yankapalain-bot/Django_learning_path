@@ -1,0 +1,15 @@
+{% extends "hrms/base.html" %}
+{% block title %}Delete Project{% endblock %}
+{% block content %}
+<h1>Delete Project: {{ object }}</h1>
+<p>Are you sure? This will remove the project and all its member assignments permanently.</p>
+
+<div id="delete-result"></div>
+
+<button
+  hx-post="{% url 'hrms:project_delete' object.pk %}"
+  hx-target="#delete-result"
+  hx-swap="innerHTML"
+>Yes, Delete</button>
+<a href="{% url 'hrms:project_list' %}">Cancel</a>
+{% endblock %}
