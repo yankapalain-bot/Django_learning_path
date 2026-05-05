@@ -1,0 +1,54 @@
+{% extends "hrms/base.html" %}
+{% block title %}{{ project.name }}{% endblock %}
+{% block content %}
+<h1>{{ project.name }}</h1>
+
+<p>Status: {{ project.get_status_display }}</p>
+<p>Department:
+  {% if project.department %}
+    <a href="{% url 'hrms:department_detail' project.department.pk %}">{{ project.department.name }}</a>
+  {% else %}—{% endif %}
+</p>
+<p>Lead:
+  {% if project.lead %}
+    <a href="{% url 'hrms:employee_detail' project.lead.pk %}">{{ project.lead.full_name }}</a>
+  {% else %}—{% endif %}
+</p>
+<p>Start Date: {{ project.start_date|default:"Not set" }}</p>
+<p>End Date: {{ project.end_date|default:"Not set" }}</p>
+<p>Description: {{ project.description }}</p>
+
+<p>
+  <a href="{% url 'hrms:project_update' project.pk %}">Edit</a> |
+  <button
+    hx-delete="{% url 'hrms:project_delete' project.pk %}"
+    hx-target="#delete-result"
+    hx-swap="innerHTML"
+    hx-confirm="Permanently delete {{ project.name }}?"
+  >Delete</button>
+</p>
+<div id="delete-result"></div>
+
+<h2>Members ({{ members.count }})</h2>
+<table border="1">
+  <thead>
+    <tr><th>Name</th><th>Title</th><th>Level</th><th>Department</th></tr>
+  </thead>
+  <tbody>
+    {% for member in members %}
+    <tr>
+      <td><a href="{% url 'hrms:employee_detail' member.pk %}">{{ member.full_name }}</a></td>
+      <td>{{ member.title }}</td>
+      <td>{{ member.get_level_display }}</td>
+      <td>
+        {% if member.department %}
+          <a href="{% url 'hrms:department_detail' member.department.pk %}">{{ member.department.name }}</a>
+        {% else %}—{% endif %}
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">No members assigned.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

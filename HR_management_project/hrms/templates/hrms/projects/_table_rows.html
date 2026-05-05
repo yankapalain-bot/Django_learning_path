@@ -1,0 +1,30 @@
+{% for project in projects %}
+<tr>
+  <td><a href="{% url 'hrms:project_detail' project.pk %}">{{ project.name }}</a></td>
+  <td>{{ project.get_status_display }}</td>
+  <td>
+    {% if project.department %}
+      <a href="{% url 'hrms:department_detail' project.department.pk %}">{{ project.department.name }}</a>
+    {% else %}—{% endif %}
+  </td>
+  <td>
+    {% if project.lead %}
+      <a href="{% url 'hrms:employee_detail' project.lead.pk %}">{{ project.lead.full_name }}</a>
+    {% else %}—{% endif %}
+  </td>
+  <td>{{ project.members.count }}</td>
+  <td>{{ project.start_date|default:"—" }}</td>
+  <td>{{ project.end_date|default:"—" }}</td>
+  <td>
+    <a href="{% url 'hrms:project_update' project.pk %}">Edit</a> |
+    <button
+      hx-delete="{% url 'hrms:project_delete' project.pk %}"
+      hx-target="closest tr"
+      hx-swap="outerHTML"
+      hx-confirm="Delete project {{ project.name }}?"
+    >Delete</button>
+  </td>
+</tr>
+{% empty %}
+<tr><td colspan="8">No projects found.</td></tr>
+{% endfor %}

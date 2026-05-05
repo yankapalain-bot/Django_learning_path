@@ -1,0 +1,18 @@
+{% extends "hrms/base.html" %}
+{% block title %}{{ action }} Project{% endblock %}
+{% block content %}
+<h1>{{ action }} Project</h1>
+
+<div id="form-result"></div>
+
+<form
+  hx-post="{% if object %}{% url 'hrms:project_update' object.pk %}{% else %}{% url 'hrms:project_create' %}{% endif %}"
+  hx-target="#form-result"
+  hx-swap="innerHTML"
+>
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">{{ action }}</button>
+  <a href="{% url 'hrms:project_list' %}">Cancel</a>
+</form>
+{% endblock %}

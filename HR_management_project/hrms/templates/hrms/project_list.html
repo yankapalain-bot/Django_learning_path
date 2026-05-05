@@ -1,0 +1,47 @@
+{% extends "hrms/base.html" %}
+{% block title %}Projects{% endblock %}
+{% block content %}
+<h1>Projects</h1>
+
+<a href="{% url 'hrms:project_create' %}">+ New Project</a>
+
+<form>
+  <input
+    type="text"
+    name="q"
+    value="{{ q }}"
+    placeholder="Search projects…"
+    hx-get="{% url 'hrms:project_list' %}"
+    hx-trigger="keyup changed delay:300ms"
+    hx-target="#project-rows"
+    hx-swap="innerHTML"
+    hx-include="[name='status']"
+  >
+
+  <select
+    name="status"
+    hx-get="{% url 'hrms:project_list' %}"
+    hx-trigger="change"
+    hx-target="#project-rows"
+    hx-swap="innerHTML"
+    hx-include="[name='q']"
+  >
+    <option value="">All Statuses</option>
+    {% for val, label in status_choices %}
+      <option value="{{ val }}" {% if val == status %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+</form>
+
+<table border="1">
+  <thead>
+    <tr>
+      <th>Name</th><th>Status</th><th>Department</th>
+      <th>Lead</th><th>Members</th><th>Start</th><th>End</th><th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="project-rows">
+    {% include "hrms/projects/_table_rows.html" %}
+  </tbody>
+</table>
+{% endblock %}
